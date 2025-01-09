@@ -100,6 +100,16 @@ export default function NavigationMenu({ isOpen, onClose }) {
               >
                 News
               </motion.a>
+              {/* Admin Dashboard Button */}
+              <motion.a
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                href="/admin/dashboard"
+                className="block text-4xl font-medium text-red-400 hover:text-red-300 transition-colors"
+              >
+                Admin Dashboard
+              </motion.a>
             </nav>
 
             <motion.div

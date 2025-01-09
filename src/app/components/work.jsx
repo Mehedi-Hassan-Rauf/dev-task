@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 export default function Work() {
   const containerRef = useRef(null);
@@ -13,39 +13,61 @@ export default function Work() {
 
   const translateX = useTransform(scrollYProgress, [0, 1], [0, -2800]);
 
-  const cases = [
-    {
-      title: "Romans & Partners",
-      image: "/demo.jpg",
-      tags: ["UI/UX Design", "Property Portal"],
-      isLatest: true,
-      link: "/case-studies/romans-partners",
-    },
-    {
-      title: "Alveena Casa",
-      image: "/demo.jpg",
-      tags: ["UI/UX Design", "E-Commerce"],
-      link: "/case-studies/alveena-casa",
-    },
-    {
-      title: "Fudli App",
-      image: "/demo.jpg",
-      tags: ["E-Commerce", "Digital Product"],
-      link: "/case-studies/fudli",
-    },
-    {
-      title: "Re-Core Pilates",
-      image: "/demo.jpg",
-      tags: ["UI/UX Design", "Development"],
-      link: "/case-studies/re-core-pilates",
-    },
-    {
-      title: "Tech SuperPowers",
-      image: "/demo.jpg",
-      tags: ["UI/UX Design", "Development"],
-      link: "/case-studies/tech-superpowers",
-    },
-  ];
+  const [workData, setWorkData] = useState(null);
+
+  useEffect(() => {
+    // Fetch work data
+    const fetchWorkData = async () => {
+      try {
+        const response = await fetch("/api/content/work");
+        if (!response.ok) throw new Error("Failed to fetch work data");
+        const data = await response.json();
+        setWorkData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchWorkData();
+  }, []);
+  console.log(workData);
+  // const cases = [
+  //   {
+  //     title: "Romans & Partners",
+  //     image: "/demo.jpg",
+  //     tags: ["UI/UX Design", "Property Portal"],
+  //     isLatest: true,
+  //     link: "/case-studies/romans-partners",
+  //   },
+  //   {
+  //     title: "Alveena Casa",
+  //     image: "/demo.jpg",
+  //     tags: ["UI/UX Design", "E-Commerce"],
+  //     link: "/case-studies/alveena-casa",
+  //   },
+  //   {
+  //     title: "Fudli App",
+  //     image: "/demo.jpg",
+  //     tags: ["E-Commerce", "Digital Product"],
+  //     link: "/case-studies/fudli",
+  //   },
+  //   {
+  //     title: "Re-Core Pilates",
+  //     image: "/demo.jpg",
+  //     tags: ["UI/UX Design", "Development"],
+  //     link: "/case-studies/re-core-pilates",
+  //   },
+  //   {
+  //     title: "Tech SuperPowers",
+  //     image: "/demo.jpg",
+  //     tags: ["UI/UX Design", "Development"],
+  //     link: "/case-studies/tech-superpowers",
+  //   },
+  // ];
+
+  if (!workData) {
+    return <p>Loading...</p>; // Add a loader or skeleton as needed
+  }
 
   return (
     <section ref={containerRef} className="h-[400vh]">
@@ -72,7 +94,7 @@ export default function Work() {
                 <div className="flex items-center gap-4 mb-6">
                   <h2 className="text-5xl font-bold">Work</h2>
                   <span className="inline-flex items-center justify-center w-12 h-12 rounded-full border border-gray-200">
-                    13
+                    {workData?.content?.cases?.length}
                   </span>
                 </div>
                 <p className="text-xl text-gray-600 max-w-md">
@@ -87,7 +109,7 @@ export default function Work() {
                 Case Studies
               </a>
             </motion.div>
-            {cases.map((item, index) => (
+            {workData?.content?.cases?.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -102,8 +124,8 @@ export default function Work() {
                 >
                   {/* Background Image */}
                   <Image
-                    src={item.image}
-                    alt={item.title}
+                    src={"/demo.jpg"}
+                    alt={"demo"}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
